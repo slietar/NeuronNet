@@ -43,6 +43,9 @@ public:
 ///@}
 
 private:
+    template <class T>
+    void fill_with_distribution(std::vector<T>&, std::function<T(std::mt19937&)>);
+
     std::mt19937 rng;
     long int seed;
 
