@@ -32,7 +32,7 @@ void Neuron::set_params(const NeuronParams &np, double noise) {
     _recov = params.b*_poten;
 }
 
-void Neuron::set_type(std::string typ) {    
+void Neuron::set_type(std::string typ) {
     if (!type_exists(typ)) typ = "RS";
     _type = NeuronTypes.find(typ);
 }

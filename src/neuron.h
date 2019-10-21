@@ -1,11 +1,11 @@
 #include "globals.h"
 
 /*! \class Neuron
-  A neuron type is defined by four parameters \p a, \p b, \p c, \p d, and the "inhibitory" or "excitatory" quality. 
+  A neuron type is defined by four parameters \p a, \p b, \p c, \p d, and the "inhibitory" or "excitatory" quality.
 
   Standard types are provided in \ref NeuronTypes and identified by a 2 or 3-letter string.
 
-  The dynamic variables are the membrane potential, the recovery variable and the input. 
+  The dynamic variables are the membrane potential, the recovery variable and the input.
  */
 
 struct NeuronParams {double a, b, c, d; bool inhib;};
@@ -52,7 +52,7 @@ public:
 ///@}
 
 /*! @name Static helpers
-  \ref type_exists checks if the string \p s exists in the map \ref NeuronTypes and 
+  \ref type_exists checks if the string \p s exists in the map \ref NeuronTypes and
   \ref type_default returns the corresponding \ref NeuronParams from \ref NeuronTypes.
  */
 ///@{
@@ -64,11 +64,11 @@ public:
 ///@}
 
 private:
-/*! @name Neuron parameters 
+/*! @name Neuron parameters
   \p a, \p b, \p c, \p d, and the boolean \p inhib if neuron is inhibitory.
  */
     NeuronParams params;
-/*! @name Reference to the neuron type 
+/*! @name Reference to the neuron type
   This is an iterator to the relevant element of Neuron::NeuronTypes.
  */
     std::map<std::string, NeuronParams>::const_iterator _type;

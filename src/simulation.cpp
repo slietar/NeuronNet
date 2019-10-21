@@ -107,7 +107,7 @@ void Simulation::load_configuration(const std::string &infile) {
                     while (std::getline(ss, item, ';')) {
                         size_t split = item.find(','),
                             split2 = item.find(':');
-                        size_t from = stoi(item.substr(0, split)), 
+                        size_t from = stoi(item.substr(0, split)),
                             to = stoi(item.substr(split+1, split2));
                         double str = stod(item.substr(split2+1));
                         linklist.insert({{from, to}, str});
@@ -146,13 +146,13 @@ void Simulation::load_configuration(const std::string &infile) {
     net.set_types_params(neurtyp, neurons);
     net.set_values(npoten);
     if (linklist.empty()) net.random_connect(degree, streng);
-    else for (auto I : linklist) 
+    else for (auto I : linklist)
              net.add_link(indexmap[I.first.first], indexmap[I.first.second], I.second);
 }
 
 void Simulation::run() {
     std::ofstream outf(output), outf2, outf3;
-    if (output.size() && outf.bad()) 
+    if (output.size() && outf.bad())
         throw(OUTPUT_ERROR(std::string("Cannot write to file ")+output));
     std::ostream *_outf = &std::cout;
     if (outf.is_open()) _outf = &outf;
@@ -179,7 +179,7 @@ void Simulation::run() {
         if (outf2.is_open()) net.print_traj(time, ntypes, &outf2);
     }
     if (outf2.is_open()) outf2.close();
-    if (outf.is_open()) outf.close();        
+    if (outf.is_open()) outf.close();
 }
 
 

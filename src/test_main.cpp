@@ -16,7 +16,7 @@ TEST(simulationTest, parse) {
     EXPECT_EQ(8, s1.size_type("RS"));
     EXPECT_EQ(0, s1.size_type("XX"));
     s1.parse_types("IB:0.5, CH:0.2,TC:0.1");
-    EXPECT_EQ(2, s1.size_type("RS"));    
+    EXPECT_EQ(2, s1.size_type("RS"));
     EXPECT_EQ(2, s1.size_type("CH"));
     EXPECT_EQ(5, s1.size_type("IB"));
 }
@@ -68,14 +68,14 @@ TEST(networkTest, connect) {
     trylink = net.add_link(0, nlinks+1, .5);
     EXPECT_FALSE(trylink);
     size_t excit_idx = 0;
-    for (; excit_idx<net.size(); excit_idx++) 
+    for (; excit_idx<net.size(); excit_idx++)
         if (!net.neuron(excit_idx).is_inhibitory())
             break;
     size_t nlink = 3;
     double stren = 6.;
     std::pair<size_t, double> expec{nlink, -2*stren*nlink};
 // --- add 3 links from inhibitors to same excitatory
-    for (size_t inhib_idx=0; inhib_idx<net.size() && nlink>0; inhib_idx++) 
+    for (size_t inhib_idx=0; inhib_idx<net.size() && nlink>0; inhib_idx++)
         if ((net.neuron(inhib_idx).is_inhibitory())
             && net.add_link(excit_idx, inhib_idx, stren))
             nlink--;

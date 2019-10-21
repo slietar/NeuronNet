@@ -14,9 +14,9 @@ void Network::set_default_params(const std::map<std::string, size_t> &types,
     size_t k(0), ssize(size()-start), kmax(0);
     std::vector<double> noise(ssize);
     _RNG->uniform_double(noise);
-    for (auto I : types) 
-        if (Neuron::type_exists(I.first)) 
-            for (kmax+=I.second; k<kmax && k<ssize; k++) 
+    for (auto I : types)
+        if (Neuron::type_exists(I.first))
+            for (kmax+=I.second; k<kmax && k<ssize; k++)
                 neurons[start+k].set_default_params(I.first, noise[k]);
     for (; k<ssize; k++) neurons[start+k].set_default_params("RS", noise[k]);
 }
@@ -31,7 +31,7 @@ void Network::set_types_params(const std::vector<std::string> &_types,
 }
 
 void Network::set_values(const std::vector<double> &_poten, const size_t start) {
-    for (size_t k=0; k<_poten.size(); k++) 
+    for (size_t k=0; k<_poten.size(); k++)
         neurons[start+k].potential(_poten[k]);
 }
 
@@ -80,13 +80,13 @@ void Network::print_params(std::ostream *_out) {
     (*_out) << "Type\ta\tb\tc\td\tInhibitory\tdegree\tvalence" << std::endl;
     for (size_t nn=0; nn<size(); nn++) {
         std::pair<size_t, double> dI = degree(nn);
-        (*_out) << neurons[nn].formatted_params() 
+        (*_out) << neurons[nn].formatted_params()
                 << '\t' << dI.first << '\t' << dI.second
                 << std::endl;
     }
 }
 
-void Network::print_head(const std::map<std::string, size_t> &_nt, 
+void Network::print_head(const std::map<std::string, size_t> &_nt,
                          std::ostream *_out) {
     size_t total = 0;
     for (auto It : _nt) {
@@ -100,7 +100,7 @@ void Network::print_head(const std::map<std::string, size_t> &_nt,
             }
     }
     if (total<size())
-        for (auto In : neurons) 
+        for (auto In : neurons)
             if (In.is_type("RS")) {
                 (*_out) << '\t' << "RS.v" << '\t' << "RS.u" << '\t' << "RS.I";
                 break;
@@ -108,20 +108,20 @@ void Network::print_head(const std::map<std::string, size_t> &_nt,
     (*_out) << std::endl;
 }
 
-void Network::print_traj(const int time, const std::map<std::string, size_t> &_nt, 
+void Network::print_traj(const int time, const std::map<std::string, size_t> &_nt,
                          std::ostream *_out) {
     (*_out)  << time;
     size_t total = 0;
     for (auto It : _nt) {
         total += It.second;
-        for (auto In : neurons) 
+        for (auto In : neurons)
             if (In.is_type(It.first)) {
                 (*_out) << '\t' << In.formatted_values();
                 break;
             }
     }
     if (total<size())
-        for (auto In : neurons) 
+        for (auto In : neurons)
             if (In.is_type("RS")) {
                 (*_out) << '\t' << In.formatted_values();
                 break;
