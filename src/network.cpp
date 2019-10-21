@@ -62,6 +62,34 @@ size_t Network::random_connect(const double &mean_deg, const double &mean_streng
     return num_links;
 }
 
+
+std::pair<size_t, double> Network::degree(const size_t& index) const {
+  size_t num_connections(0);
+  double sum_intensity(0.0);
+
+  for (auto& link : links) {
+    if (link.first.first == index || link.first.second == index) {
+      num_connections += 1;
+      sum_intensity += link.second;
+    }
+  }
+
+  return std::make_pair(num_connections, sum_intensity);
+}
+
+std::vector<std::pair<size_t, double>> Network::neighbors(const size_t& index) const {
+  std::vector<std::pair<size_t, double>> neighbor_vec;
+
+  for (auto& link : links) {
+    if (link.first.first == index) {
+      neighbor_vec.push_back(std::make_pair(link.first.second, link.second));
+    }
+  }
+
+  return neighbor_vec;
+}
+
+
 std::vector<double> Network::potentials() const {
     std::vector<double> vals;
     for (size_t nn=0; nn<size(); nn++)
@@ -75,6 +103,29 @@ std::vector<double> Network::recoveries() const {
         vals.push_back(neurons[nn].recovery());
     return vals;
 }
+
+
+std::set<size_t> Network::step(const std::vector<double>& thalamic_input) {
+  std::set<size_t> firing_indices;
+
+  for (size_t index = 0; index < size(); index++) {
+    Neuron& neuron = neurons[index];
+
+    if (neuron.firing()) {
+      neuron.reset();
+    }
+
+    neuron.input(thalamic_input[index] * (neuron.is_inhibitory() ? 0.4 : 1.0));
+    neuron.step();
+
+    if (neuron.firing()) {
+      firing_indices.insert(index);
+    }
+  }
+
+  return firing_indices;
+}
+
 
 void Network::print_params(std::ostream *_out) {
     (*_out) << "Type\ta\tb\tc\td\tInhibitory\tdegree\tvalence" << std::endl;
