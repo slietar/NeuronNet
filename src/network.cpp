@@ -64,25 +64,22 @@ size_t Network::random_connect(const double &mean_deg, const double &mean_streng
 
 
 std::pair<size_t, double> Network::degree(const size_t& index) const {
-  size_t num_connections(0);
   double sum_intensity(0.0);
+  auto neighbor_vec = neighbors(index);
 
-  for (auto& link : links) {
-    if (link.first.first == index || link.first.second == index) {
-      num_connections += 1;
-      sum_intensity += link.second;
-    }
+  for (const auto& connection : neighbor_vec) {
+    sum_intensity += connection.second;
   }
 
-  return std::make_pair(num_connections, sum_intensity);
+  return std::make_pair(neighbor_vec.size(), sum_intensity);
 }
 
 std::vector<std::pair<size_t, double>> Network::neighbors(const size_t& index) const {
   std::vector<std::pair<size_t, double>> neighbor_vec;
 
-  for (auto& link : links) {
-    if (link.first.first == index) {
-      neighbor_vec.push_back(std::make_pair(link.first.second, link.second));
+  for (auto it(links.lower_bound({ index, 0 })); it != links.end() && it->first.first == index; it++) {
+    if (it->first.first == index) {
+      neighbor_vec.push_back(std::make_pair(it->first.second, it->second));
     }
   }
 
@@ -108,6 +105,22 @@ std::vector<double> Network::recoveries() const {
 std::set<size_t> Network::step(const std::vector<double>& thalamic_input) {
   std::set<size_t> firing_indices;
 
+  for (size_t index(0); index < size(); index++) {
+    Neuron& neuron = neurons[index];
+
+    double input = thalamic_input[index] * (neuron.is_inhibitory() ? 0.4 : 1.0);
+
+    for (auto& connection : neighbors(index)) {
+      const Neuron& neighbor = neurons[connection.first];
+
+      if (neighbor.firing()) {
+        input += connection.second * (neuron.is_inhibitory() ? -1.0 : 0.5);
+      }
+    }
+
+    neuron.input(input);
+  }
+
   for (size_t index = 0; index < size(); index++) {
     Neuron& neuron = neurons[index];
 
@@ -115,7 +128,6 @@ std::set<size_t> Network::step(const std::vector<double>& thalamic_input) {
       neuron.reset();
     }
 
-    neuron.input(thalamic_input[index] * (neuron.is_inhibitory() ? 0.4 : 1.0));
     neuron.step();
 
     if (neuron.firing()) {
