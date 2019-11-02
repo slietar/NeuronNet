@@ -4,11 +4,10 @@
 using std::vector;
 
 
-RandomNumbers::RandomNumbers(unsigned long int opt_seed) : seed(opt_seed) {
-  if (opt_seed == 0) {
-    std::random_device rd;
-    seed = rd();
-  }
+RandomNumbers::RandomNumbers(unsigned long int opt_seed) {
+  seed = opt_seed != 0
+    ? opt_seed
+    : std::random_device()();
 
   rng = std::mt19937(seed);
 }
